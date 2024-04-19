@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace PayOida.PayPal.Auth.Http;
@@ -38,9 +37,8 @@ public static class PayPalClientExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddOptions<PayPalAuthenticationOptions>()
-                .ValidateOnStart();
-        services.TryAddSingleton<IValidateOptions<PayPalAuthenticationOptions>, PayPalAuthenticationOptionsValidation>();
+        services.AddOptionsWithValidateOnStart<PayPalAuthenticationOptions, PayPalAuthenticationOptionsValidation>();
+
         services.AddHttpClient<PayPalAuthenticationHandler>(ConfigurePayPalHttpClient);
     }
 

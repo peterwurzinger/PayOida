@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using PayOida.PayPal.Auth.Http;
 using PayOida.PayPal.Auth.Webhooks.Authorization;
 
 namespace PayOida.PayPal.Auth.Webhooks;
@@ -11,13 +12,15 @@ public static class WebhookVerificationExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.AddDistributedMemoryCache();
         services.TryAddSingleton<IWebhookSignatureCertificateStore, CachedWebhookSignatureCertificateStore>();
         services.TryAddSingleton<PayPalWebhookVerifier>();
-
+        
         services.AddScoped<IAuthorizationHandler, PayPalWebhookVerficationHandler>();
-        services.AddHttpContextAccessor();
 
+        services.AddOptionsWithValidateOnStart<PayPalWebhookVerificationOptions, PayPalWebhookVerificationOptionsValidation>();
+
+        services.AddDistributedMemoryCache();
+        services.AddHttpContextAccessor();
         services.AddAuthorizationCore();
 
         return services;
